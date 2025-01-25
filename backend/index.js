@@ -12,29 +12,34 @@ dotenv.config({});
 
 const app = express();
 
-// middleware
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// CORS configuration
 const corsOptions = {
-    origin:'https://job-portal-orpin-six.vercel.app',
-    credentials:true
-}
+  origin: 'https://job-portal-orpin-six.vercel.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
 app.use(cors(corsOptions));
 
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
+// Port
 const PORT = process.env.PORT || 3000;
 
-
-// api's
+// API Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 
-
-
-app.listen(PORT,()=>{
-    connectDB();
-    console.log(`Server running at port ${PORT}`);
-})
+// Start server
+app.listen(PORT, () => {
+  connectDB();
+  console.log(`Server running at port ${PORT}`);
+});
