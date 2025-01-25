@@ -18,9 +18,11 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 const cors = require('cors');
 
-const allowedOrigins = [
-'https://job-portal-orpin-six.vercel.app',
-];
+
+const corsOptions = {
+    origin:'https://job-portal-orpin-six.vercel.app',
+    credentials:true
+}
 app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
