@@ -19,22 +19,8 @@ app.use(cookieParser());
 const cors = require('cors');
 
 const allowedOrigins = [
-  'https://job-portal-frontend-3vzalbxz5-rhythms-projects-e362c31f.vercel.app',
-  'https://job-portal-orpin-six.vercel.app'
+'https://job-portal-orpin-six.vercel.app',
 ];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, // Allow cookies if needed
-};
-
 app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
