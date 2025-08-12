@@ -14,10 +14,6 @@ export const register = async (req, res) => {
                 success: false
             });
         };
-        const file = req.file;
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
         const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
@@ -25,6 +21,11 @@ export const register = async (req, res) => {
                 success: false,
             })
         }
+        const file = req.file;
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+       
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
@@ -169,4 +170,5 @@ export const updateProfile = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+
 }
