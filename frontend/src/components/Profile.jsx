@@ -10,13 +10,13 @@ import UpdateProfileDialog from './UpdateProfileDialog'
 import { useSelector } from 'react-redux'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 
-// const skills = ["Html", "Css", "Javascript", "Reactjs"]
-const isResume = true;
-
 const Profile = () => {
     useGetAppliedJobs();
     const [open, setOpen] = useState(false);
-    const {user} = useSelector(store=>store.auth);
+    const { user } = useSelector(store => store.auth);
+
+    // Check if user has a resume URL
+    const hasResume = Boolean(user?.profile?.resume);
 
     return (
         <div>
@@ -25,48 +25,61 @@ const Profile = () => {
                 <div className='flex justify-between'>
                     <div className='flex items-center gap-4'>
                         <Avatar className="h-24 w-24">
-                            <AvatarImage src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg" alt="profile" />
+                            <AvatarImage src={user?.profile?.profilePhoto || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"} alt="profile" />
                         </Avatar>
                         <div>
-                            <h1 className='font-medium text-xl'>{user?.fullname}</h1>
-                            <p>{user?.profile?.bio}</p>
+                            <h1 className='font-medium text-xl'>{user?.fullname || "No Name"}</h1>
+                            <p>{user?.profile?.bio || "No bio available"}</p>
                         </div>
                     </div>
                     <Button onClick={() => setOpen(true)} className="text-right" variant="outline"><Pen /></Button>
                 </div>
+
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
                         <Mail />
-                        <span>{user?.email}</span>
+                        <span>{user?.email || "No email"}</span>
                     </div>
                     <div className='flex items-center gap-3 my-2'>
                         <Contact />
-                        <span>{user?.phoneNumber}</span>
+                        <span>{user?.phoneNumber || "No phone number"}</span>
                     </div>
                 </div>
+
                 <div className='my-5'>
                     <h1>Skills</h1>
                     <div className='flex items-center gap-1'>
-                        {
-                            user?.profile?.skills.length !== 0 ? user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>) : <span>NA</span>
+                        {user?.profile?.skills?.length > 0 
+                            ? user.profile.skills.map((skill, index) => <Badge key={index}>{skill}</Badge>)
+                            : <span>NA</span>
                         }
                     </div>
                 </div>
+
                 <div className='grid w-full max-w-sm items-center gap-1.5'>
                     <Label className="text-md font-bold">Resume</Label>
-                    {
-                        isResume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                    {hasResume
+                        ? <a 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            href={user.profile.resume} 
+                            className='text-blue-500 w-full hover:underline cursor-pointer'
+                          >
+                            {user.profile.resumeOriginalName || "View Resume"}
+                          </a>
+                        : <span>NA</span>
                     }
                 </div>
             </div>
+
             <div className='max-w-4xl mx-auto bg-white rounded-2xl'>
                 <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
-                {/* Applied Job Table   */}
                 <AppliedJobTable />
             </div>
-            <UpdateProfileDialog open={open} setOpen={setOpen}/>
+
+            <UpdateProfileDialog open={open} setOpen={setOpen} />
         </div>
     )
 }
 
-export default Profile
+export default Profile;
